@@ -1,0 +1,166 @@
+<div class="landing" #landingScroll>
+
+  <!-- ══════════ ANIMATED CAIRO GRID BACKGROUND (Hero only) ══════════ -->
+  <div class="city-grid"
+       [style.transform]="'translate(' + parallaxX() + 'px,' + parallaxY() + 'px)'">
+    <div class="grid-lines"></div>
+    @for (zone of hotZones; track zone.id) {
+      <div class="hot-zone"
+           [style.left.%]="zone.x"
+           [style.top.%]="zone.y"
+           [style.animation-delay.s]="zone.delay"
+           [style.animation-duration.s]="zone.duration">
+      </div>
+    }
+    @for (label of floatingLabels; track label.text) {
+      <span class="float-label"
+            [style.left.%]="label.x"
+            [style.top.%]="label.y"
+            [style.animation-delay.s]="label.delay">
+        {{ label.text }}
+      </span>
+    }
+  </div>
+
+  <!-- ══════════ SECTION 1 — HERO ══════════ -->
+  <section class="section section-hero">
+    <div class="hero-content">
+      <h1 class="hero-headline" dir="rtl">
+        <span class="hero-line">القرار الغلط بيكلّف.</span>
+        <span class="hero-line">القرار الصح بيكسب.</span>
+      </h1>
+      <p class="hero-sub">Real estate intelligence. Built for those who move first.</p>
+      <button class="cta-btn" (click)="navigateToChat()">ابدأ مجاناً</button>
+    </div>
+    <div class="scroll-indicator">
+      <div class="scroll-line"></div>
+    </div>
+  </section>
+
+  <!-- ══════════ SECTION 2 — THE PROBLEM ══════════ -->
+  <section class="section section-problem" data-section="2">
+    <div class="problem-content">
+      <div class="problem-statements">
+        <p class="problem-line" [class.visible]="problemLine1()">
+          المستثمرين بيخسروا مش لأنهم مش ذكيين.
+        </p>
+        <p class="problem-line" [class.visible]="problemLine2()">
+          بيخسروا لأن معلوماتهم جاتلهم متأخرة.
+        </p>
+        <p class="problem-line problem-gold" [class.visible]="problemLine3()">
+          SiteIntel بيحل ده.
+        </p>
+      </div>
+      <div class="problem-timeline">
+        <div class="timeline-line"></div>
+        <div class="timeline-dot"></div>
+        <div class="timeline-dot"></div>
+        <div class="timeline-dot"></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ══════════ SECTION 3 — WHAT IT DOES ══════════ -->
+  <section class="section section-features" data-section="3" [class.visible]="section3Visible()">
+    <h2 class="section-headline" dir="rtl">ذكاء. لا أقل.</h2>
+    <div class="features-grid">
+      <div class="feature-card">
+        <div class="card-icon">
+          <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+            <circle cx="12" cy="12" r="10"/>
+            <line x1="2" y1="12" x2="22" y2="12"/>
+            <path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/>
+          </svg>
+        </div>
+        <h3 class="card-title" dir="rtl">تحليل فوري للمنطقة</h3>
+        <p class="card-body" dir="rtl">اسأل عن أي حاجة في السوق — الإجابة في ثواني.</p>
+      </div>
+      <div class="feature-card">
+        <div class="card-icon">
+          <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+            <line x1="12" y1="20" x2="12" y2="10"/>
+            <line x1="18" y1="20" x2="18" y2="4"/>
+            <line x1="6" y1="20" x2="6" y2="16"/>
+          </svg>
+        </div>
+        <h3 class="card-title" dir="rtl">ROI بالأرقام الحقيقية</h3>
+        <p class="card-body" dir="rtl">مش تقديرات. حسابات مبنية على بيانات السوق الفعلية.</p>
+      </div>
+      <div class="feature-card">
+        <div class="card-icon">
+          <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+            <rect x="3" y="3" width="7" height="7"/>
+            <rect x="14" y="3" width="7" height="7"/>
+            <rect x="3" y="14" width="7" height="7"/>
+            <rect x="14" y="14" width="7" height="7"/>
+          </svg>
+        </div>
+        <h3 class="card-title" dir="rtl">مقارنات في لحظة</h3>
+        <p class="card-body" dir="rtl">قارن بين مناطق، أسعار، وعوائد — قبل ما السوق يتحرك.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- ══════════ SECTION 4 — THE NUMBERS ══════════ -->
+  <section class="section section-numbers" data-section="4" [class.visible]="section4Visible()">
+    <div class="numbers-grid">
+      <div class="number-item">
+        <span class="number-value">{{ formatCounter(0) }}</span>
+        <span class="number-label">صفقة محللة</span>
+      </div>
+      <div class="number-item">
+        <span class="number-value">{{ formatCounter(1) }}</span>
+        <span class="number-label">منطقة في مصر</span>
+      </div>
+      <div class="number-item">
+        <span class="number-value">{{ formatCounter(2) }}</span>
+        <span class="number-label">دقة التحليل</span>
+      </div>
+      <div class="number-item">
+        <span class="number-value">{{ formatCounter(3) }}</span>
+        <span class="number-label">متوسط وقت الإجابة</span>
+      </div>
+    </div>
+  </section>
+
+  <!-- ══════════ SECTION 5 — PRICING ══════════ -->
+  <section class="section section-pricing" data-section="5" [class.visible]="section5Visible()">
+    <h2 class="section-headline" dir="rtl">بسيط زي ما المفروض يكون.</h2>
+    <div class="pricing-grid">
+      <div class="pricing-card pricing-free">
+        <div class="pricing-tier">FREE</div>
+        <div class="pricing-divider"></div>
+        <p class="pricing-desc" dir="rtl">ابدأ من غير ما تدفع حاجة.</p>
+        <ul class="pricing-features" dir="rtl">
+          <li>10 تحليلات يومياً</li>
+          <li>بيانات أساسية</li>
+        </ul>
+        <div class="pricing-price" dir="rtl">مجاناً</div>
+        <button class="pricing-btn pricing-btn-free" (click)="navigateToChat()">ابدأ</button>
+      </div>
+      <div class="pricing-card pricing-pro">
+        <div class="pricing-tier">PRO</div>
+        <div class="pricing-divider pricing-divider-gold"></div>
+        <p class="pricing-desc" dir="rtl">للمستثمر الجاد.</p>
+        <ul class="pricing-features" dir="rtl">
+          <li>تحليلات غير محدودة</li>
+          <li>تقارير مفصلة</li>
+          <li>مقارنات متقدمة</li>
+          <li>أولوية في الردود</li>
+        </ul>
+        <div class="pricing-price" dir="rtl"><span class="price-num">99</span> جنيه / شهر</div>
+        <button class="pricing-btn pricing-btn-pro">اشترك</button>
+      </div>
+    </div>
+  </section>
+
+  <!-- ══════════ SECTION 6 — THE CLOSER ══════════ -->
+  <section class="section section-closer" data-section="6" [class.visible]="section6Visible()">
+    <div class="closer-content">
+      <h2 class="closer-headline" dir="rtl">السوق مش بيستنى.</h2>
+      <button class="cta-btn" (click)="navigateToChat()">ابدأ مجاناً</button>
+      <p class="closer-note">No credit card. No commitment. No noise.</p>
+    </div>
+  </section>
+
+</div>
