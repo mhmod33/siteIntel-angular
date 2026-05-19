@@ -1,0 +1,183 @@
+<div class="admin-page" [class.loaded]="pageLoaded()">
+
+  <!-- ══════════ BACKGROUND ══════════ -->
+  <div class="city-grid">
+    <div class="grid-lines"></div>
+    @for (zone of hotZones; track zone.id) {
+      <div class="hot-zone"
+           [style.left.%]="zone.x"
+           [style.top.%]="zone.y"
+           [style.animation-delay.s]="zone.delay"
+           [style.animation-duration.s]="zone.duration">
+      </div>
+    }
+  </div>
+
+  <!-- ══════════ TOP BAR ══════════ -->
+  <header class="topbar">
+    <div class="topbar-brand">
+      <span class="topbar-logo">SI</span>
+      <span class="topbar-name">SiteIntel</span>
+      <span class="topbar-badge">ADMIN</span>
+    </div>
+    <div class="topbar-actions">
+      <a routerLink="/chat" class="topbar-link">المحادثات</a>
+      <button class="topbar-btn" (click)="logout()">خروج</button>
+    </div>
+  </header>
+
+  <!-- ══════════ MAIN CONTENT ══════════ -->
+  <main class="admin-main">
+
+    <!-- Header -->
+    <div class="admin-header">
+      <div class="admin-title-row">
+        <h1 class="admin-title">إدارة المستخدمين</h1>
+        <span class="admin-count">{{ users().length }} مستخدم</span>
+      </div>
+      <button class="admin-add-btn" (click)="openCreateModal()">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round">
+          <path d="M12 5v14M5 12h14"/>
+        </svg>
+        <span>مستخدم جديد</span>
+      </button>
+    </div>
+
+    <!-- Success message -->
+    @if (success()) {
+      <div class="admin-success">
+        <span>✓</span>
+        <span>{{ success() }}</span>
+      </div>
+    }
+
+    <!-- Loading -->
+    @if (loading()) {
+      <div class="admin-loading">
+        <div class="scan-bars">
+          <span class="scan-bar"></span>
+          <span class="scan-bar"></span>
+          <span class="scan-bar"></span>
+        </div>
+        <span>جاري التحميل...</span>
+      </div>
+    }
+
+    <!-- Users Grid -->
+    @if (!loading()) {
+      <div class="users-grid">
+        @for (user of users(); track user.id; let i = $index) {
+          <div class="user-card" [style.animation-delay.ms]="i * 60">
+            <div class="uc-top">
+              <div class="uc-avatar">{{ user.name.charAt(0) }}</div>
+              <div class="uc-info">
+                <span class="uc-name">{{ user.name }}</span>
+                <span class="uc-email">{{ user.email }}</span>
+              </div>
+            </div>
+            <div class="uc-meta">
+              <span class="uc-role" [class.admin-role]="user.user_type === 'admin'">
+                {{ getRoleLabel(user.user_type) }}
+              </span>
+              <span class="uc-status" [style.color]="getStatusColor(user.user_status)">
+                <span class="status-dot" [style.background]="getStatusColor(user.user_status)"></span>
+                {{ getStatusLabel(user.user_status) }}
+              </span>
+            </div>
+            <div class="uc-actions">
+              <button class="uc-edit" (click)="openEditModal(user)">
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round">
+                  <path d="M11 4H4a2 2 0 00-2 2v14a2 2 0 002 2h14a2 2 0 002-2v-7"/>
+                  <path d="M18.5 2.5a2.121 2.121 0 013 3L12 15l-4 1 1-4 9.5-9.5z"/>
+                </svg>
+                تعديل
+              </button>
+              <button class="uc-delete" (click)="deleteUser(user)">
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round">
+                  <polyline points="3 6 5 6 21 6"/>
+                  <path d="M19 6v14a2 2 0 01-2 2H7a2 2 0 01-2-2V6m3 0V4a2 2 0 012-2h4a2 2 0 012 2v2"/>
+                </svg>
+                حذف
+              </button>
+            </div>
+          </div>
+        }
+      </div>
+    }
+  </main>
+
+  <!-- ══════════ MODAL ══════════ -->
+  @if (showModal()) {
+    <div class="modal-overlay" (click)="closeModal()">
+      <div class="modal-card" (click)="$event.stopPropagation()">
+        <div class="modal-header">
+          <h2 class="modal-title">
+            {{ modalMode() === 'create' ? 'مستخدم جديد' : 'تعديل المستخدم' }}
+          </h2>
+          <button class="modal-close" (click)="closeModal()">✕</button>
+        </div>
+
+        @if (error()) {
+          <div class="modal-error">
+            <span>⚠</span>
+            <span>{{ error() }}</span>
+          </div>
+        }
+
+        <div class="modal-form">
+          <div class="form-group">
+            <label class="form-label">الاسم</label>
+            <input type="text" class="form-input"
+                   [value]="formName()"
+                   (input)="onFormInput('name', $event)"
+                   placeholder="اسم المستخدم" dir="rtl"/>
+          </div>
+
+          <div class="form-group">
+            <label class="form-label">البريد الإلكتروني</label>
+            <input type="email" class="form-input"
+                   [value]="formEmail()"
+                   (input)="onFormInput('email', $event)"
+                   placeholder="email@example.com" dir="ltr"/>
+          </div>
+
+          <div class="form-group">
+            <label class="form-label">
+              كلمة المرور
+              @if (modalMode() === 'edit') {
+                <span class="label-hint">(اتركه فارغ لعدم التغيير)</span>
+              }
+            </label>
+            <input type="password" class="form-input"
+                   [value]="formPassword()"
+                   (input)="onFormInput('password', $event)"
+                   placeholder="••••••••" dir="ltr"/>
+          </div>
+
+          <div class="form-row">
+            <div class="form-group">
+              <label class="form-label">النوع</label>
+              <select class="form-select" [value]="formUserType()" (change)="onSelectChange('type', $event)">
+                <option value="user">مستخدم</option>
+                <option value="admin">مدير</option>
+              </select>
+            </div>
+
+            <div class="form-group">
+              <label class="form-label">الحالة</label>
+              <select class="form-select" [value]="formUserStatus()" (change)="onSelectChange('status', $event)">
+                <option value="active">نشط</option>
+                <option value="inactive">غير نشط</option>
+                <option value="banned">محظور</option>
+              </select>
+            </div>
+          </div>
+
+          <button class="modal-submit" (click)="submitForm()">
+            {{ modalMode() === 'create' ? 'إنشاء' : 'حفظ التعديلات' }}
+          </button>
+        </div>
+      </div>
+    </div>
+  }
+</div>

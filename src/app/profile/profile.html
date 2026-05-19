@@ -1,0 +1,100 @@
+<div class="profile-page" [class.loaded]="pageLoaded()">
+
+  <!-- ══════════ BACKGROUND ══════════ -->
+  <div class="city-grid">
+    <div class="grid-lines"></div>
+    @for (zone of hotZones; track zone.id) {
+      <div class="hot-zone"
+           [style.left.%]="zone.x"
+           [style.top.%]="zone.y"
+           [style.animation-delay.s]="zone.delay"
+           [style.animation-duration.s]="zone.duration">
+      </div>
+    }
+  </div>
+
+  <!-- ══════════ TOP BAR ══════════ -->
+  <header class="topbar">
+    <div class="topbar-brand">
+      <span class="topbar-logo">SI</span>
+      <span class="topbar-name">SiteIntel</span>
+    </div>
+    <div class="topbar-actions">
+      <a routerLink="/chat" class="topbar-link">المحادثات</a>
+      <button class="topbar-btn" (click)="logout()">خروج</button>
+    </div>
+  </header>
+
+  <!-- ══════════ PROFILE CONTENT ══════════ -->
+  <main class="profile-main">
+    @if (user()) {
+      <div class="profile-card">
+        <!-- Avatar -->
+        <div class="profile-avatar">
+          <span class="avatar-letter">{{ user()!.name.charAt(0) }}</span>
+          <div class="avatar-ring"></div>
+        </div>
+
+        <!-- Name & Email -->
+        <h1 class="profile-name">{{ user()!.name }}</h1>
+        <p class="profile-email">{{ user()!.email }}</p>
+
+        <!-- Info Grid -->
+        <div class="profile-info">
+          <div class="info-item">
+            <span class="info-label">النوع</span>
+            <span class="info-value role-badge" [class.admin]="user()!.user_type === 'admin'">
+              {{ getRoleLabel(user()!.user_type) }}
+            </span>
+          </div>
+          <div class="info-item">
+            <span class="info-label">الحالة</span>
+            <span class="info-value status-value" [style.color]="getStatusColor(user()!.user_status)">
+              <span class="status-dot" [style.background]="getStatusColor(user()!.user_status)"></span>
+              {{ getStatusLabel(user()!.user_status) }}
+            </span>
+          </div>
+          <div class="info-item">
+            <span class="info-label">رقم المستخدم</span>
+            <span class="info-value id-value">#{{ user()!.id }}</span>
+          </div>
+        </div>
+
+        <!-- Actions -->
+        <div class="profile-actions">
+          <a routerLink="/chat" class="action-btn primary">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round">
+              <path d="M21 15a2 2 0 01-2 2H7l-4 4V5a2 2 0 012-2h14a2 2 0 012 2z"/>
+            </svg>
+            <span>الرجوع للمحادثات</span>
+          </a>
+          @if (user()!.user_type === 'admin') {
+            <a routerLink="/admin" class="action-btn secondary">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round">
+                <path d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197"/>
+              </svg>
+              <span>لوحة التحكم</span>
+            </a>
+          }
+          <button class="action-btn danger" (click)="logout()">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round">
+              <path d="M9 21H5a2 2 0 01-2-2V5a2 2 0 012-2h4"/>
+              <polyline points="16 17 21 12 16 7"/>
+              <line x1="21" y1="12" x2="9" y2="12"/>
+            </svg>
+            <span>تسجيل الخروج</span>
+          </button>
+        </div>
+      </div>
+    } @else {
+      <div class="profile-loading">
+        <div class="scan-bars">
+          <span class="scan-bar"></span>
+          <span class="scan-bar"></span>
+          <span class="scan-bar"></span>
+        </div>
+        <span>جاري التحميل...</span>
+      </div>
+    }
+  </main>
+</div>

@@ -1,0 +1,102 @@
+<div class="auth-page" [class.loaded]="pageLoaded()">
+
+  <!-- ══════════ ANIMATED GRID BACKGROUND ══════════ -->
+  <div class="city-grid">
+    <div class="grid-lines"></div>
+    @for (zone of hotZones; track zone.id) {
+      <div class="hot-zone"
+           [style.left.%]="zone.x"
+           [style.top.%]="zone.y"
+           [style.animation-delay.s]="zone.delay"
+           [style.animation-duration.s]="zone.duration">
+      </div>
+    }
+    @for (label of floatingLabels; track label.text) {
+      <span class="float-label"
+            [style.left.%]="label.x"
+            [style.top.%]="label.y"
+            [style.animation-delay.s]="label.delay">
+        {{ label.text }}
+      </span>
+    }
+  </div>
+
+  <!-- ══════════ LOGIN CARD ══════════ -->
+  <div class="auth-container">
+    <div class="auth-card">
+      <div class="auth-header">
+        <div class="auth-logo">
+          <span class="logo-mark">SI</span>
+          <span class="logo-text">SiteIntel</span>
+        </div>
+        <h1 class="auth-title">تسجيل الدخول</h1>
+        <p class="auth-subtitle">ادخل على مركز المعلومات</p>
+      </div>
+
+      @if (error()) {
+        <div class="auth-error">
+          <span class="error-icon">⚠</span>
+          <span>{{ error() }}</span>
+        </div>
+      }
+
+      <form class="auth-form" (ngSubmit)="onSubmit()">
+        <div class="form-group">
+          <label class="form-label">البريد الإلكتروني</label>
+          <div class="input-wrapper">
+            <input
+              type="email"
+              class="form-input"
+              [value]="email()"
+              (input)="email.set($any($event.target).value)"
+              placeholder="email@example.com"
+              dir="ltr"
+              autocomplete="email"
+            />
+            <svg class="input-icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+              <rect x="2" y="4" width="20" height="16" rx="2"/>
+              <path d="M22 7l-10 6L2 7"/>
+            </svg>
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label class="form-label">كلمة المرور</label>
+          <div class="input-wrapper">
+            <input
+              type="password"
+              class="form-input"
+              [value]="password()"
+              (input)="password.set($any($event.target).value)"
+              placeholder="••••••••"
+              dir="ltr"
+              autocomplete="current-password"
+            />
+            <svg class="input-icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+              <rect x="3" y="11" width="18" height="11" rx="2"/>
+              <path d="M7 11V7a5 5 0 0110 0v4"/>
+            </svg>
+          </div>
+        </div>
+
+        <button type="submit" class="auth-btn" [disabled]="loading()">
+          @if (loading()) {
+            <span class="btn-loader"></span>
+            <span>جاري الدخول...</span>
+          } @else {
+            <span>دخول</span>
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round">
+              <line x1="5" y1="12" x2="19" y2="12"/>
+              <polyline points="12 5 19 12 12 19"/>
+            </svg>
+          }
+        </button>
+      </form>
+
+      <div class="auth-footer">
+        <span>مالكش حساب؟</span>
+        <a routerLink="/register" class="auth-link">سجل دلوقتي</a>
+      </div>
+    </div>
+  </div>
+</div>

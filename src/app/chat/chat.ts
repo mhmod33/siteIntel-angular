@@ -3,7 +3,10 @@ import {
   OnInit, OnDestroy, HostListener, AfterViewInit
 } from '@angular/core';
 import { FormsModule } from '@angular/forms';
+import { Router, RouterLink } from '@angular/router';
 import { DomSanitizer, SafeHtml } from '@angular/platform-browser';
+import { ChatService, ChatSession } from '../services/chat.service';
+import { AuthService } from '../services/auth.service';
 
 interface ChatMessage {
   id: string;
@@ -31,12 +34,18 @@ interface CarouselCard {
 
 @Component({
   selector: 'app-chat',
-  imports: [FormsModule],
+  imports: [FormsModule, RouterLink],
   templateUrl: './chat.html',
   styleUrl: './chat.css',
 })
 export class ChatComponent implements OnInit, OnDestroy, AfterViewInit {
   private sanitizer = inject(DomSanitizer);
+  private chatService = inject(ChatService);
+  private authService = inject(AuthService);
+  private router = inject(Router);
+
+  currentSessionId = signal<number | null>(null);
+  sessions = signal<ChatSession[]>([]);
 
   // State
   messages = signal<ChatMessage[]>([]);
@@ -56,15 +65,8 @@ export class ChatComponent implements OnInit, OnDestroy, AfterViewInit {
   showEmptyState = computed(() => this.messages().length === 0);
   conversationActive = computed(() => this.messages().length > 0);
 
-  // Constellation nodes
-  nodes = signal<ConversationNode[]>([
-    { id: '1', title: 'تحليل التجمع الخامس', preview: 'أفضل مناطق الاستثمار...', x: 25, y: 30, size: 14, category: 'roi' },
-    { id: '2', title: 'مقارنة زايد والتجمع', preview: 'متوسط سعر المتر...', x: 60, y: 20, size: 10, category: 'compare' },
-    { id: '3', title: 'ROI العاصمة الإدارية', preview: 'نسبة العائد المتوقع...', x: 45, y: 65, size: 16, category: 'roi' },
-    { id: '4', title: 'اتجاهات الساحل', preview: 'أسعار الوحدات...', x: 75, y: 50, size: 12, category: 'trends' },
-    { id: '5', title: 'تحليل مدينة نصر', preview: 'سعر المتر الحالي...', x: 30, y: 70, size: 9, category: 'trends' },
-    { id: '6', title: 'استثمار المعادي', preview: 'فرص الشراء...', x: 80, y: 75, size: 11, category: 'roi' },
-  ]);
+  // Constellation nodes (populated from API sessions)
+  nodes = signal<ConversationNode[]>([]);
 
   // Carousel
   carouselCards: CarouselCard[] = [
@@ -113,6 +115,27 @@ export class ChatComponent implements OnInit, OnDestroy, AfterViewInit {
     setTimeout(() => this.pageLoaded.set(true), 80);
     this.startCarouselAutoPlay();
     this.startHeroToggle();
+    this.loadSessions();
+  }
+
+  private loadSessions() {
+    this.chatService.getSessions().subscribe({
+      next: (response: any) => {
+        const sessions = Array.isArray(response) ? response : (response.data ?? []);
+        this.sessions.set(sessions);
+        const categories: Array<'roi' | 'compare' | 'trends'> = ['roi', 'compare', 'trends'];
+        this.nodes.set(sessions.map((s: any, i: number) => ({
+          id: String(s.id),
+          title: s.title || `محادثة ${s.id}`,
+          preview: '',
+          x: 20 + Math.random() * 60,
+          y: 20 + Math.random() * 60,
+          size: 10 + Math.random() * 6,
+          category: categories[i % 3],
+        })));
+      },
+      error: () => {},
+    });
   }
 
   ngAfterViewInit() {}
@@ -184,6 +207,24 @@ export class ChatComponent implements OnInit, OnDestroy, AfterViewInit {
   selectNode(node: ConversationNode) {
     this.activeConvId.set(node.id);
     this.constellationOpen.set(false);
+    this.currentSessionId.set(Number(node.id));
+    // Load session messages
+    this.chatService.getSession(Number(node.id)).subscribe({
+      next: (response: any) => {
+        const detail = response?.data ?? response;
+        const messages = detail?.messages ?? [];
+        const msgs: ChatMessage[] = messages.map((m: any) => ({
+          id: String(m.id),
+          role: m.role === 'assistant' ? 'ai' as const : 'user' as const,
+          content: m.content,
+          timestamp: new Date(m.created_at),
+          isStreaming: false,
+        }));
+        this.messages.set(msgs);
+        this.scrollToBottom();
+      },
+      error: () => {},
+    });
   }
 
   getNodeColor(category: string): string {
@@ -246,13 +287,8 @@ export class ChatComponent implements OnInit, OnDestroy, AfterViewInit {
     this.resetTextarea();
     this.scrollToBottom();
 
-    setTimeout(() => this.simulateAiStream(), 800);
-  }
-
-  private simulateAiStream() {
     this.isAiTyping.set(true);
     const aiId = crypto.randomUUID();
-
     this.messages.update(msgs => [...msgs, {
       id: aiId,
       role: 'ai',
@@ -262,44 +298,61 @@ export class ChatComponent implements OnInit, OnDestroy, AfterViewInit {
     }]);
     this.scrollToBottom();
 
-    const fullResponse = this.getMockResponse();
-    let charIdx = 0;
-
-    setTimeout(() => {
-      this.streamTimer = setInterval(() => {
-        if (charIdx < fullResponse.length) {
-          charIdx = Math.min(charIdx + 3, fullResponse.length);
-          this.messages.update(msgs =>
-            msgs.map(m => m.id === aiId ? { ...m, content: fullResponse.substring(0, charIdx) } : m)
-          );
-          this.scrollToBottom();
-        } else {
-          if (this.streamTimer) clearInterval(this.streamTimer);
-          this.messages.update(msgs =>
-            msgs.map(m => m.id === aiId ? { ...m, isStreaming: false } : m)
-          );
-          this.isAiTyping.set(false);
-        }
-      }, 18);
-    }, 2000);
+    // If we have a session, ask within it; otherwise create one first
+    if (this.currentSessionId()) {
+      this.askInSession(this.currentSessionId()!, content, aiId);
+    } else {
+      this.chatService.createSession(content.substring(0, 50)).subscribe({
+        next: (response: any) => {
+          const session = response?.data ?? response;
+          this.currentSessionId.set(session.id);
+          this.askInSession(session.id, content, aiId);
+          this.loadSessions();
+        },
+        error: () => {
+          this.handleAiError(aiId);
+        },
+      });
+    }
   }
 
-  private getMockResponse(): string {
-    return `## تحليل السوق العقاري
+  private askInSession(sessionId: number, question: string, aiMsgId: string) {
+    this.chatService.askInSession(sessionId, question).subscribe({
+      next: (response: any) => {
+        const res = response?.data ?? response;
+        const answer = res?.answer ?? res?.content ?? '';
+        this.streamResponse(answer, aiMsgId);
+      },
+      error: () => {
+        this.handleAiError(aiMsgId);
+      },
+    });
+  }
 
-بناءً على تحليل البيانات المتاحة للسوق المصري:
+  private streamResponse(fullText: string, aiMsgId: string) {
+    let charIdx = 0;
+    this.streamTimer = setInterval(() => {
+      if (charIdx < fullText.length) {
+        charIdx = Math.min(charIdx + 3, fullText.length);
+        this.messages.update(msgs =>
+          msgs.map(m => m.id === aiMsgId ? { ...m, content: fullText.substring(0, charIdx) } : m)
+        );
+        this.scrollToBottom();
+      } else {
+        if (this.streamTimer) clearInterval(this.streamTimer);
+        this.messages.update(msgs =>
+          msgs.map(m => m.id === aiMsgId ? { ...m, isStreaming: false } : m)
+        );
+        this.isAiTyping.set(false);
+      }
+    }, 18);
+  }
 
-**متوسط سعر المتر:** 25,000 - 35,000 جنيه
-
-**نسبة العائد المتوقع:** 12-15% سنوياً
-
-| المنطقة | سعر المتر | العائد السنوي |
-|---------|-----------|---------------|
-| التجمع الخامس | 32,000 ج | 14% |
-| الشيخ زايد | 28,000 ج | 12% |
-| العاصمة الإدارية | 22,000 ج | 18% |
-
-**التوصية:** المنطقة الأنسب للاستثمار حالياً هي العاصمة الإدارية نظراً لارتفاع العائد المتوقع وإمكانية النمو المستقبلي.`;
+  private handleAiError(aiMsgId: string) {
+    this.messages.update(msgs =>
+      msgs.map(m => m.id === aiMsgId ? { ...m, content: 'حصل خطأ، حاول تاني.', isStreaming: false } : m)
+    );
+    this.isAiTyping.set(false);
   }
 
   selectSuggestion(text: string) {
@@ -311,10 +364,18 @@ export class ChatComponent implements OnInit, OnDestroy, AfterViewInit {
     if (this.streamTimer) clearInterval(this.streamTimer);
     this.messages.set([]);
     this.activeConvId.set(null);
+    this.currentSessionId.set(null);
     this.isAiTyping.set(false);
     this.irisOpen.set(false);
     this.constellationOpen.set(false);
     this.runTypewriter();
+  }
+
+  logout() {
+    this.authService.logout().subscribe({
+      next: () => this.router.navigate(['/login']),
+      error: () => this.router.navigate(['/login']),
+    });
   }
 
   onKeydown(event: KeyboardEvent) {

@@ -200,6 +200,47 @@
   transform: rotate(90deg);
 }
 
+.topbar-profile {
+  width: 34px;
+  height: 34px;
+  border-radius: 50%;
+  background: var(--gold-ghost);
+  border: 1px solid rgba(201, 168, 76, 0.12);
+  color: var(--gold-dim);
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.25s var(--ease);
+  text-decoration: none;
+}
+
+.topbar-profile:hover {
+  background: var(--gold-soft);
+  border-color: var(--gold);
+  color: var(--gold);
+}
+
+.topbar-logout {
+  width: 34px;
+  height: 34px;
+  border-radius: 50%;
+  background: rgba(220, 60, 60, 0.06);
+  border: 1px solid rgba(220, 60, 60, 0.12);
+  color: rgba(220, 60, 60, 0.6);
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.25s var(--ease);
+}
+
+.topbar-logout:hover {
+  background: rgba(220, 60, 60, 0.12);
+  border-color: rgba(220, 60, 60, 0.3);
+  color: #e04040;
+}
+
 /* ═══════════════════════════════════════════════════════
    INTEL BOARD — COMMAND CENTER OVERLAY
    ═══════════════════════════════════════════════════════ */
