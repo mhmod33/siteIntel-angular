@@ -1,0 +1,79 @@
+:host {
+  display: block;
+  --gold: #B8952A;
+  --bg: #080808;
+  --surface: #0F0F0F;
+  --platinum: #C8C8C8;
+  --white: #FFFFFF;
+  --font-body: 'IBM Plex Sans Arabic', sans-serif;
+  --font-data: 'Space Grotesk', monospace;
+}
+
+.not-found {
+  min-height: 100vh;
+  min-height: 100dvh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: var(--bg);
+  padding: 40px;
+}
+
+.not-found-content {
+  text-align: center;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 24px;
+}
+
+.error-code {
+  font-family: var(--font-data);
+  font-size: clamp(8rem, 20vw, 15rem);
+  font-weight: 700;
+  color: var(--gold);
+  line-height: 1;
+  opacity: 0.3;
+  animation: errorPulse 3s ease-in-out infinite;
+}
+
+@keyframes errorPulse {
+  0%, 100% { opacity: 0.3; }
+  50% { opacity: 0.5; }
+}
+
+.error-title {
+  font-family: var(--font-body);
+  font-size: clamp(1.5rem, 4vw, 2.5rem);
+  color: var(--white);
+  font-weight: 200;
+  letter-spacing: 0.04em;
+}
+
+.error-message {
+  font-family: var(--font-body);
+  font-size: 16px;
+  color: var(--platinum);
+  font-weight: 300;
+  max-width: 400px;
+  line-height: 1.7;
+}
+
+.back-btn {
+  font-family: var(--font-body);
+  font-size: 16px;
+  font-weight: 400;
+  color: var(--gold);
+  background: transparent;
+  border: 1px solid var(--gold);
+  padding: 14px 48px;
+  border-radius: 4px;
+  letter-spacing: 0.03em;
+  transition: all 600ms ease;
+  cursor: pointer;
+}
+
+.back-btn:hover {
+  background: var(--gold);
+  color: #000000;
+}

@@ -12,7 +12,7 @@ import { Router } from '@angular/router';
 export class LandingComponent implements OnInit, OnDestroy, AfterViewInit {
   // Counter values
   counters = signal<number[]>([0, 0, 0, 0]);
-  counterTargets = [40000, 12, 98, 3];
+  counterTargets = [40000, 61, 98, 3];
   counterLabels = ['صفقة محللة', 'منطقة في مصر', 'دقة التحليل', 'متوسط وقت الإجابة'];
   counterPrefixes = ['+', '', '', ''];
   counterSuffixes = ['', '', '%', ' ثواني'];
@@ -32,6 +32,23 @@ export class LandingComponent implements OnInit, OnDestroy, AfterViewInit {
   // Parallax for background
   parallaxX = signal(0);
   parallaxY = signal(0);
+
+  // Property pin positions
+  pin1X = signal(20);
+  pin1Y = signal(35);
+  pin2X = signal(75);
+  pin2Y = signal(25);
+  pin3X = signal(45);
+  pin3Y = signal(60);
+  pin4X = signal(85);
+  pin4Y = signal(55);
+  pin5X = signal(15);
+  pin5Y = signal(70);
+
+  // Data line paths
+  dataLine1Path = signal('');
+  dataLine2Path = signal('');
+  dataLine3Path = signal('');
 
   // Hot zones for the hero grid background
   hotZones = Array.from({ length: 6 }, (_, i) => ({
@@ -57,7 +74,12 @@ export class LandingComponent implements OnInit, OnDestroy, AfterViewInit {
 
   constructor(private router: Router) {}
 
-  ngOnInit() {}
+  ngOnInit() {
+    // Initialize data line paths connecting pins
+    this.dataLine1Path.set(`M ${this.pin1X()} ${this.pin1Y()} Q 30 45 ${this.pin3X()} ${this.pin3Y()}`);
+    this.dataLine2Path.set(`M ${this.pin2X()} ${this.pin2Y()} Q 60 40 ${this.pin4X()} ${this.pin4Y()}`);
+    this.dataLine3Path.set(`M ${this.pin3X()} ${this.pin3Y()} Q 40 80 ${this.pin5X()} ${this.pin5Y()}`);
+  }
 
   ngAfterViewInit() {
     this.setupIntersectionObserver();

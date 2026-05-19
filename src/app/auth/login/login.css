@@ -224,6 +224,10 @@
   transition: all 0.3s var(--ease);
 }
 
+.form-input.has-toggle {
+  padding-right: 70px;
+}
+
 .form-input::placeholder {
   color: var(--text-ghost);
 }
@@ -244,6 +248,31 @@
 
 .form-input:focus ~ .input-icon {
   color: var(--gold-dim);
+}
+
+.password-toggle {
+  position: absolute;
+  right: 44px;
+  width: 32px;
+  height: 32px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: transparent;
+  border: none;
+  color: var(--text-ghost);
+  cursor: pointer;
+  transition: all 0.3s var(--ease);
+  border-radius: 6px;
+}
+
+.password-toggle:hover {
+  color: var(--gold);
+  background: rgba(201, 168, 76, 0.08);
+}
+
+.password-toggle:active {
+  transform: scale(0.95);
 }
 
 /* ═══ BUTTON ═══ */

@@ -1,6 +1,7 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
+import { map } from 'rxjs/operators';
 import { environment } from '../../environments/environment';
 import { User } from './auth.service';
 
@@ -27,7 +28,9 @@ export class AdminService {
   constructor(private http: HttpClient) {}
 
   getUsers(): Observable<User[]> {
-    return this.http.get<User[]>(`${this.API}/users`);
+    return this.http.get<{ users: User[] }>(`${this.API}/users`).pipe(
+      map((response: { users: User[] }) => response.users)
+    );
   }
 
   getUser(id: number): Observable<User> {

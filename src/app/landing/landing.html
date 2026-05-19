@@ -1,5 +1,44 @@
 <div class="landing" #landingScroll>
 
+  <!-- ══════════ ANIMATED MESH GRADIENT BACKGROUND ══════════ -->
+  <div class="mesh-bg">
+    <div class="mesh-orb mesh-orb-1"></div>
+    <div class="mesh-orb mesh-orb-2"></div>
+    <div class="mesh-orb mesh-orb-3"></div>
+    <div class="mesh-orb mesh-orb-4"></div>
+    <div class="mesh-orb mesh-orb-5"></div>
+    <div class="mesh-noise"></div>
+
+    <!-- Real Estate themed animations -->
+    <div class="realestate-layer">
+      <!-- Building silhouettes -->
+      <div class="building-skyline">
+        <div class="building building-1"></div>
+        <div class="building building-2"></div>
+        <div class="building building-3"></div>
+        <div class="building building-4"></div>
+        <div class="building building-5"></div>
+        <div class="building building-6"></div>
+      </div>
+
+      <!-- Property pins -->
+      <div class="property-pins">
+        <div class="pin pin-1" [style.left.%]="pin1X()" [style.top.%]="pin1Y()"></div>
+        <div class="pin pin-2" [style.left.%]="pin2X()" [style.top.%]="pin2Y()"></div>
+        <div class="pin pin-3" [style.left.%]="pin3X()" [style.top.%]="pin3Y()"></div>
+        <div class="pin pin-4" [style.left.%]="pin4X()" [style.top.%]="pin4Y()"></div>
+        <div class="pin pin-5" [style.left.%]="pin5X()" [style.top.%]="pin5Y()"></div>
+      </div>
+
+      <!-- Data connection lines -->
+      <svg class="data-lines" viewBox="0 0 100 100" preserveAspectRatio="none">
+        <path class="data-line data-line-1" [attr.d]="dataLine1Path()" />
+        <path class="data-line data-line-2" [attr.d]="dataLine2Path()" />
+        <path class="data-line data-line-3" [attr.d]="dataLine3Path()" />
+      </svg>
+    </div>
+  </div>
+
   <!-- ══════════ ANIMATED CAIRO GRID BACKGROUND (Hero only) ══════════ -->
   <div class="city-grid"
        [style.transform]="'translate(' + parallaxX() + 'px,' + parallaxY() + 'px)'">
@@ -103,22 +142,81 @@
 
   <!-- ══════════ SECTION 4 — THE NUMBERS ══════════ -->
   <section class="section section-numbers" data-section="4" [class.visible]="section4Visible()">
-    <div class="numbers-grid">
-      <div class="number-item">
-        <span class="number-value">{{ formatCounter(0) }}</span>
-        <span class="number-label">صفقة محللة</span>
+    <div class="numbers-container">
+      <div class="numbers-header">
+        <h2 class="numbers-title" dir="rtl">الأرقام تتحدث</h2>
+        <p class="numbers-subtitle">بيانات حقيقية. نتائج حقيقية.</p>
       </div>
-      <div class="number-item">
-        <span class="number-value">{{ formatCounter(1) }}</span>
-        <span class="number-label">منطقة في مصر</span>
-      </div>
-      <div class="number-item">
-        <span class="number-value">{{ formatCounter(2) }}</span>
-        <span class="number-label">دقة التحليل</span>
-      </div>
-      <div class="number-item">
-        <span class="number-value">{{ formatCounter(3) }}</span>
-        <span class="number-label">متوسط وقت الإجابة</span>
+      <div class="numbers-grid">
+        <div class="number-card number-card-1">
+          <div class="number-icon">
+            <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"></path>
+              <polyline points="3.27 6.96 12 12.01 20.73 6.96"></polyline>
+              <line x1="12" y1="22.08" x2="12" y2="12"></line>
+            </svg>
+          </div>
+          <div class="number-value">{{ formatCounter(0) }}</div>
+          <div class="number-label">صفقة محللة</div>
+          <div class="number-trend trend-up">
+            <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <polyline points="23 6 13.5 15.5 8.5 10.5 1 18"></polyline>
+              <polyline points="17 6 23 6 23 12"></polyline>
+            </svg>
+            <span>+15%</span>
+          </div>
+        </div>
+        <div class="number-card number-card-2">
+          <div class="number-icon">
+            <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+              <circle cx="12" cy="12" r="10"></circle>
+              <line x1="2" y1="12" x2="22" y2="12"></line>
+              <path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"></path>
+            </svg>
+          </div>
+          <div class="number-value">{{ formatCounter(1) }}</div>
+          <div class="number-label">منطقة في مصر</div>
+          <div class="number-trend trend-up">
+            <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <polyline points="23 6 13.5 15.5 8.5 10.5 1 18"></polyline>
+              <polyline points="17 6 23 6 23 12"></polyline>
+            </svg>
+            <span>+8%</span>
+          </div>
+        </div>
+        <div class="number-card number-card-3">
+          <div class="number-icon">
+            <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path>
+              <polyline points="22 4 12 14.01 9 11.01"></polyline>
+            </svg>
+          </div>
+          <div class="number-value">{{ formatCounter(2) }}</div>
+          <div class="number-label">دقة التحليل</div>
+          <div class="number-trend trend-stable">
+            <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <line x1="5" y1="12" x2="19" y2="12"></line>
+            </svg>
+            <span>ثابت</span>
+          </div>
+        </div>
+        <div class="number-card number-card-4">
+          <div class="number-icon">
+            <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+              <circle cx="12" cy="12" r="10"></circle>
+              <polyline points="12 6 12 12 16 14"></polyline>
+            </svg>
+          </div>
+          <div class="number-value">{{ formatCounter(3) }}</div>
+          <div class="number-label">متوسط وقت الإجابة</div>
+          <div class="number-trend trend-down">
+            <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <polyline points="23 18 13.5 8.5 8.5 13.5 1 6"></polyline>
+              <polyline points="17 18 23 18 23 12"></polyline>
+            </svg>
+            <span>-40%</span>
+          </div>
+        </div>
       </div>
     </div>
   </section>

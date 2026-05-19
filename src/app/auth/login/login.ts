@@ -15,6 +15,7 @@ export class LoginComponent implements OnInit {
   error = signal('');
   loading = signal(false);
   pageLoaded = signal(false);
+  passwordVisible = signal(false);
 
   hotZones = Array.from({ length: 6 }, (_, i) => ({
     id: i,
@@ -35,6 +36,10 @@ export class LoginComponent implements OnInit {
 
   ngOnInit() {
     setTimeout(() => this.pageLoaded.set(true), 80);
+  }
+
+  togglePasswordVisibility() {
+    this.passwordVisible.update(v => !v);
   }
 
   onSubmit() {
