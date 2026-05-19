@@ -1,0 +1,241 @@
+<div class="warroom" [class.loaded]="pageLoaded()">
+
+  <!-- ══════════ ANIMATED CAIRO GRID BACKGROUND ══════════ -->
+  <div class="city-grid"
+       [style.transform]="'translate(' + parallaxX() + 'px,' + parallaxY() + 'px)'">
+    <div class="grid-lines"></div>
+
+    @for (zone of hotZones; track zone.id) {
+      <div class="hot-zone"
+           [style.left.%]="zone.x"
+           [style.top.%]="zone.y"
+           [style.animation-delay.s]="zone.delay"
+           [style.animation-duration.s]="zone.duration">
+      </div>
+    }
+
+    @for (label of floatingLabels; track label.text) {
+      <span class="float-label"
+            [style.left.%]="label.x"
+            [style.top.%]="label.y"
+            [style.animation-delay.s]="label.delay">
+        {{ label.text }}
+      </span>
+    }
+  </div>
+
+  <!-- ══════════ TOP BAR ══════════ -->
+  <header class="topbar">
+    <div class="topbar-brand">
+      <span class="topbar-logo">SI</span>
+      <span class="topbar-name">SiteIntel</span>
+    </div>
+    <button class="history-toggle" (click)="toggleConstellation()" [class.active]="constellationOpen()">
+      <span class="history-label">المحادثات</span>
+      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
+           [style.transform]="constellationOpen() ? 'rotate(180deg)' : 'rotate(0)'">
+        <polyline points="6 9 12 15 18 9"/>
+      </svg>
+    </button>
+    <button class="topbar-new" (click)="newChat()" title="محادثة جديدة">
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round">
+        <path d="M12 5v14M5 12h14"/>
+      </svg>
+    </button>
+  </header>
+
+  <!-- ══════════ INTEL BOARD ══════════ -->
+  <div class="intel-overlay" [class.open]="constellationOpen()">
+    <div class="intel-bg" (click)="toggleConstellation()"></div>
+    <div class="intel-board">
+
+      <div class="intel-top">
+        <div class="intel-title-row">
+          <span class="intel-badge">INTEL</span>
+          <span class="intel-title">سجل العمليات</span>
+        </div>
+        <button class="intel-close" (click)="toggleConstellation()">
+          ESC
+        </button>
+      </div>
+
+      <div class="intel-grid">
+        @for (node of nodes(); track node.id; let i = $index) {
+          <button class="intel-card"
+                  [class.active]="activeConvId() === node.id"
+                  [style.animation-delay.ms]="i * 70"
+                  (click)="selectNode(node)">
+            <div class="ic-top">
+              <span class="ic-cat" [attr.data-cat]="node.category">
+                {{ node.category === 'roi' ? 'ROI' : node.category === 'compare' ? 'مقارنة' : 'اتجاهات' }}
+              </span>
+              <span class="ic-dot" [style.background]="getNodeColor(node.category)"></span>
+            </div>
+            <span class="ic-title">{{ node.title }}</span>
+            <span class="ic-preview">{{ node.preview }}</span>
+            <div class="ic-footer">
+              <span class="ic-time">منذ ساعتين</span>
+              <svg class="ic-arrow" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round">
+                <path d="M5 12h14M12 5l7 7-7 7"/>
+              </svg>
+            </div>
+          </button>
+        }
+      </div>
+
+      <div class="intel-bottom">
+        <button class="intel-new" (click)="newChat()">
+          <span class="intel-new-icon">+</span>
+          عملية جديدة
+        </button>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- ══════════ MAIN CONTENT ══════════ -->
+  <main class="main-area">
+
+    <!-- ═══ EMPTY STATE ═══ -->
+    @if (showEmptyState()) {
+      <div class="empty-state">
+        <h1 class="hero" dir="rtl">
+          @for (word of currentHeroWords(); track $index; let i = $index) {
+            <span class="hero-word visible"
+                  [class.hero-brand]="word.includes('SiteIntel')"
+                  [style.animation-delay.ms]="i * 150">{{ word }}</span>
+          }
+        </h1>
+
+        <!-- 3D Carousel -->
+        <div class="carousel-wrapper">
+          <div class="carousel" style="perspective: 1200px">
+            @for (card of carouselCards; track card.text; let i = $index) {
+              <button class="carousel-card"
+                      [style.transform]="getCardTransform(i)"
+                      [style.opacity]="getCardOpacity(i)"
+                      [style.z-index]="getCardZIndex(i)"
+                      [class.center]="i === carouselIndex()"
+                      (click)="selectSuggestion(card.text)">
+                <span class="cc-icon">{{ card.icon }}</span>
+                <span class="cc-text" dir="rtl">{{ card.text }}</span>
+                <span class="cc-tag">{{ card.district }}</span>
+              </button>
+            }
+          </div>
+          <div class="carousel-dots">
+            @for (card of carouselCards; track card.text; let i = $index) {
+              <button class="dot" [class.active]="i === carouselIndex()" (click)="goToCard(i)"></button>
+            }
+          </div>
+        </div>
+      </div>
+    }
+
+    <!-- ═══ MESSAGES ═══ -->
+    @if (!showEmptyState()) {
+      <div class="messages-area" #chatScroll>
+        <div class="messages-inner">
+          @for (msg of messages(); track trackById($index, msg)) {
+            @if (msg.role === 'user') {
+              <div class="msg-row msg-user">
+                <div class="intel-msg user-msg" [attr.dir]="detectDir(msg.content)">
+                  <div class="im-header">
+                    <span class="im-badge user-badge">YOU</span>
+                    <span class="im-time">الآن</span>
+                  </div>
+                  <p class="im-body">{{ msg.content }}</p>
+                </div>
+              </div>
+            } @else {
+              <div class="msg-row msg-ai">
+                <div class="intel-msg ai-msg" [class.streaming]="msg.isStreaming">
+                  <div class="im-header">
+                    <span class="im-badge ai-badge">INTEL</span>
+                    @if (msg.isStreaming) {
+                      <span class="im-status">
+                        <span class="im-status-dot"></span>
+                        جاري التحليل
+                      </span>
+                    } @else {
+                      <span class="im-time">الآن</span>
+                    }
+                  </div>
+                  @if (msg.isStreaming && !msg.content) {
+                    <div class="ai-scanning">
+                      <div class="scan-bars">
+                        <span class="scan-bar"></span>
+                        <span class="scan-bar"></span>
+                        <span class="scan-bar"></span>
+                      </div>
+                      <span class="scanning-text">بحلل السوق...</span>
+                    </div>
+                  } @else {
+                    <div class="ai-body" dir="rtl" [innerHTML]="renderMarkdown(msg.content)"></div>
+                  }
+                </div>
+              </div>
+            }
+          }
+        </div>
+      </div>
+    }
+
+    <!-- ═══ IRIS INPUT ═══ -->
+    <div class="iris-container" [class.conversation-mode]="conversationActive()">
+
+      @if (!irisOpen() && !conversationActive()) {
+        <!-- Closed Iris -->
+        <div class="iris-closed" (click)="openIris()">
+          <div class="iris-ring"></div>
+          <div class="iris-core">
+            <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+              <line x1="5" y1="12" x2="19" y2="12"/>
+              <polyline points="12 5 19 12 12 19"/>
+            </svg>
+          </div>
+          <span class="iris-hint">اسأل السوق</span>
+        </div>
+      }
+
+      @if (irisOpen() || conversationActive()) {
+        <!-- Open Iris / Input Bar -->
+        <div class="iris-open" [class.compact]="conversationActive()">
+          <div class="iris-halo"></div>
+          <div class="iris-field">
+            <textarea
+              #msgInput
+              [value]="inputText()"
+              (input)="onInput($event)"
+              (keydown)="onKeydown($event)"
+              (focus)="inputFocused.set(true)"
+              (blur)="inputFocused.set(false)"
+              placeholder="اسأل عن أي حاجة في السوق العقاري..."
+              rows="1"
+              dir="rtl"
+            ></textarea>
+            @if (isAiTyping()) {
+              <button class="iris-send stop" (click)="newChat()" aria-label="Stop">
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor">
+                  <rect x="5" y="5" width="14" height="14" rx="3"/>
+                </svg>
+              </button>
+            } @else {
+              <button class="iris-send"
+                      [class.ready]="inputText().trim()"
+                      [disabled]="!inputText().trim()"
+                      (click)="sendMessage()"
+                      aria-label="Send">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                  <line x1="5" y1="12" x2="19" y2="12"/>
+                  <polyline points="12 5 19 12 12 19"/>
+                </svg>
+              </button>
+            }
+          </div>
+        </div>
+      }
+    </div>
+
+  </main>
+</div>

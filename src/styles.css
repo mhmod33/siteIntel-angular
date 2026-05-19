@@ -1,1 +1,50 @@
-/* You can add global styles to this file, and also import other style files */
+*,
+*::before,
+*::after {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+html, body {
+  height: 100%;
+  overflow: hidden;
+  background: #060608;
+  color: #f0ece4;
+  font-family: 'IBM Plex Sans Arabic', -apple-system, BlinkMacSystemFont, sans-serif;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  direction: rtl;
+}
+
+body {
+  line-height: 1.6;
+}
+
+::-webkit-scrollbar {
+  width: 3px;
+  opacity: 0;
+  transition: opacity 0.3s;
+}
+
+*:hover::-webkit-scrollbar {
+  opacity: 1;
+}
+
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+::-webkit-scrollbar-thumb {
+  background: rgba(201, 168, 76, 0.3);
+  border-radius: 3px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: rgba(201, 168, 76, 0.5);
+}
+
+::selection {
+  background: rgba(201, 168, 76, 0.25);
+  color: #fff;
+}
