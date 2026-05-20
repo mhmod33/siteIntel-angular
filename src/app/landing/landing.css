@@ -301,50 +301,54 @@
 
 .hero-headline {
   font-family: var(--font-body);
-  font-weight: 200;
-  font-size: clamp(2.2rem, 5.5vw, 4.5rem);
+  font-weight: 300;
   color: var(--white);
   text-align: center;
-  letter-spacing: 0.04em;
-  line-height: 1.5;
   display: flex;
   flex-direction: column;
-  gap: 12px;
+  gap: 20px;
+  width: 100%;
+  align-items: center;
 }
 
 .hero-line {
-  display: block;
-  position: relative;
-  overflow: hidden;
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+  align-items: center;
+  gap: 16px;
+  width: 100%;
 }
 
-
-/* Line 1 — left border accent */
 .hero-line-1 {
-  border-left: 3px solid var(--gold);
-  padding: 6px 16px;
-  border-radius: 2px;
+  /* No static borders */
 }
 
-/* Line 2 — right border accent */
 .hero-line-2 {
-  border-right: 3px solid var(--gold);
-  padding: 6px 16px;
-  border-radius: 2px;
+  /* No static borders */
 }
 
-/* Individual word reveal */
+/* Individual word reveal box */
 .hero-word {
-  display: inline-block;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
   opacity: 0;
-  background: rgba(184, 149, 42, 0.07);
-  border: 1px solid rgba(184, 149, 42, 0.18);
-  padding: 6px 14px;
-  border-radius: 8px;
-  transition: opacity 150ms ease-out;
-  margin-inline-start: 0.35em;
-  backdrop-filter: blur(8px);
-  -webkit-backdrop-filter: blur(8px);
+  background: rgba(184, 149, 42, 0.04);
+  border: 1.5px solid rgba(184, 149, 42, 0.16);
+  padding: 18px 36px;
+  border-radius: 12px;
+  font-size: clamp(1.8rem, 4vw, 3.2rem);
+  font-weight: 300;
+  color: var(--white);
+  min-width: clamp(140px, 12vw, 220px);
+  text-align: center;
+  transition: opacity 250ms ease-out, background 350ms ease, border-color 350ms ease, box-shadow 350ms ease;
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  box-shadow: 
+    0 10px 30px rgba(0, 0, 0, 0.4),
+    inset 0 0 15px rgba(184, 149, 42, 0.02);
 }
 
 .hero-word:first-child {
@@ -353,20 +357,72 @@
 
 .hero-word.hero-word-visible {
   opacity: 1;
+  background: rgba(184, 149, 42, 0.12); /* beautiful golden tint matching the image */
+  border-color: rgba(184, 149, 42, 0.35); /* defined gold border matching the image */
+  box-shadow: 
+    0 12px 35px rgba(0, 0, 0, 0.5),
+    inset 0 0 20px rgba(184, 149, 42, 0.06);
 }
 
-/* Typewriter Cursor */
+/* Special Styling for the brand word "SiteIntel" */
+.hero-word.siteintel-brand {
+  font-family: var(--font-data);
+  font-weight: 500;
+  letter-spacing: 0.05em;
+  border-color: rgba(184, 149, 42, 0.25);
+  background: rgba(184, 149, 42, 0.05);
+  position: relative;
+  overflow: hidden;
+}
+
+.hero-word.siteintel-brand.hero-word-visible {
+  background: radial-gradient(circle at center, rgba(184, 149, 42, 0.28) 0%, rgba(15, 15, 15, 0.96) 100%);
+  border-color: rgba(184, 149, 42, 0.9);
+  box-shadow: 
+    0 15px 40px rgba(184, 149, 42, 0.3),
+    0 0 30px rgba(184, 149, 42, 0.2),
+    inset 0 0 20px rgba(184, 149, 42, 0.1);
+  animation: brandPop 0.6s cubic-bezier(0.34, 1.56, 0.64, 1) forwards;
+}
+
+.hero-word.siteintel-brand::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.15), transparent);
+  transform: translateX(-100%);
+}
+
+.hero-word.siteintel-brand.hero-word-visible::after {
+  animation: brandShimmer 2s ease-in-out 0.5s infinite;
+}
+
+@keyframes brandPop {
+  0% { transform: scale(0.92); letter-spacing: -0.02em; }
+  100% { transform: scale(1.06); letter-spacing: 0.06em; }
+}
+
+@keyframes brandShimmer {
+  100% { transform: translateX(100%); }
+}
+
+/* Typewriter Cursor styled as a solid vertical line next to the word */
 .typewriter-cursor {
   display: inline-block;
-  color: var(--gold);
-  font-weight: 700;
-  margin-inline-start: 4px;
+  width: 4px;
+  height: clamp(50px, 5vw, 75px);
+  background-color: var(--gold);
+  margin-inline-start: 8px;
+  margin-inline-end: 8px;
   animation: blinkCursor 0.8s step-end infinite;
+  align-self: center;
+  box-shadow: 0 0 8px rgba(184, 149, 42, 0.6);
+  border-radius: 2px;
 }
 
 @keyframes blinkCursor {
-  from, to { color: transparent; }
-  50% { color: var(--gold); }
+  from, to { background-color: transparent; box-shadow: none; }
+  50% { background-color: var(--gold); box-shadow: 0 0 8px rgba(184, 149, 42, 0.6); }
 }
 
 .hero-sub {

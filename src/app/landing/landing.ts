@@ -11,10 +11,10 @@ import { Router } from '@angular/router';
 })
 export class LandingComponent implements OnInit, OnDestroy, AfterViewInit {
   // Hero headline word-by-word reveal
-  heroLine1Words = ['القرار', 'الغلط', 'بيكلّف.'];
-  heroLine2Words = ['القرار', 'الصح', 'بيكسب.'];
+  heroLine1Words = ['قبل', 'ما', 'تقرر،'];
+  heroLine2Words = ['اسأل', 'SiteIntel'];
   visibleWords1 = signal<boolean[]>([false, false, false]);
-  visibleWords2 = signal<boolean[]>([false, false, false]);
+  visibleWords2 = signal<boolean[]>([false, false]);
   isLine1Active = signal(true);
   isLine2Active = signal(false);
 
@@ -99,7 +99,7 @@ export class LandingComponent implements OnInit, OnDestroy, AfterViewInit {
     const line1Start = 400; // when line 1 starts (ms after load)
 
     this.visibleWords1.set([false, false, false]);
-    this.visibleWords2.set([false, false, false]);
+    this.visibleWords2.set([false, false]);
     this.isLine1Active.set(true);
     this.isLine2Active.set(false);
 

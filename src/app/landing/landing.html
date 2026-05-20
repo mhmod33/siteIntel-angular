@@ -78,18 +78,26 @@
       <h1 class="hero-headline" dir="rtl">
         <span class="hero-line hero-line-1">
           @for (word of heroLine1Words; track $index) {
-            <span class="hero-word" [class.hero-word-visible]="visibleWords1()[$index]">{{ word }}</span>
+            <span class="hero-word" 
+                  [class.hero-word-visible]="visibleWords1()[$index]"
+                  [class.siteintel-brand]="word === 'SiteIntel'">
+              {{ word }}
+            </span>
           }
           @if (isLine1Active()) {
-            <span class="typewriter-cursor">|</span>
+            <span class="typewriter-cursor"></span>
           }
         </span>
         <span class="hero-line hero-line-2">
           @for (word of heroLine2Words; track $index) {
-            <span class="hero-word" [class.hero-word-visible]="visibleWords2()[$index]">{{ word }}</span>
+            <span class="hero-word" 
+                  [class.hero-word-visible]="visibleWords2()[$index]"
+                  [class.siteintel-brand]="word === 'SiteIntel'">
+              {{ word }}
+            </span>
           }
           @if (isLine2Active()) {
-            <span class="typewriter-cursor">|</span>
+            <span class="typewriter-cursor"></span>
           }
         </span>
       </h1>
