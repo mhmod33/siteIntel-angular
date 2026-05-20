@@ -10,6 +10,14 @@ import { Router } from '@angular/router';
   styleUrl: './landing.css',
 })
 export class LandingComponent implements OnInit, OnDestroy, AfterViewInit {
+  // Hero headline word-by-word reveal
+  heroLine1Words = ['القرار', 'الغلط', 'بيكلّف.'];
+  heroLine2Words = ['القرار', 'الصح', 'بيكسب.'];
+  visibleWords1 = signal<boolean[]>([false, false, false]);
+  visibleWords2 = signal<boolean[]>([false, false, false]);
+  isLine1Active = signal(true);
+  isLine2Active = signal(false);
+
   // Counter values
   counters = signal<number[]>([0, 0, 0, 0]);
   counterTargets = [40000, 61, 98, 3];
@@ -66,6 +74,8 @@ export class LandingComponent implements OnInit, OnDestroy, AfterViewInit {
     { text: 'المعادي', x: 85, y: 65, delay: 7 },
   ];
 
+  showScrollTop = signal(false);
+
   private countersStarted = false;
   private counterInterval: ReturnType<typeof setInterval> | null = null;
   private observer: IntersectionObserver | null = null;
@@ -79,6 +89,56 @@ export class LandingComponent implements OnInit, OnDestroy, AfterViewInit {
     this.dataLine1Path.set(`M ${this.pin1X()} ${this.pin1Y()} Q 30 45 ${this.pin3X()} ${this.pin3Y()}`);
     this.dataLine2Path.set(`M ${this.pin2X()} ${this.pin2Y()} Q 60 40 ${this.pin4X()} ${this.pin4Y()}`);
     this.dataLine3Path.set(`M ${this.pin3X()} ${this.pin3Y()} Q 40 80 ${this.pin5X()} ${this.pin5Y()}`);
+
+    // Hero headline word-by-word reveal
+    this.startHeroWordReveal();
+  }
+
+  private startHeroWordReveal() {
+    const stepMs = 500; // delay between each word
+    const line1Start = 400; // when line 1 starts (ms after load)
+
+    this.visibleWords1.set([false, false, false]);
+    this.visibleWords2.set([false, false, false]);
+    this.isLine1Active.set(true);
+    this.isLine2Active.set(false);
+
+    // Reveal Line 1 word-by-word
+    this.heroLine1Words.forEach((_, i) => {
+      setTimeout(() => {
+        this.visibleWords1.update(arr => {
+          const next = [...arr];
+          next[i] = true;
+          return next;
+        });
+
+        // Once Line 1 is fully revealed, transition cursor to Line 2 after a gap
+        if (i === this.heroLine1Words.length - 1) {
+          setTimeout(() => {
+            this.isLine1Active.set(false);
+            this.isLine2Active.set(true);
+
+            // Reveal Line 2 word-by-word
+            this.heroLine2Words.forEach((_, j) => {
+              setTimeout(() => {
+                this.visibleWords2.update(arr2 => {
+                  const next2 = [...arr2];
+                  next2[j] = true;
+                  return next2;
+                });
+
+                // Once Line 2 is fully revealed, deactivate its blinking cursor after a brief delay
+                if (j === this.heroLine2Words.length - 1) {
+                  setTimeout(() => {
+                    this.isLine2Active.set(false);
+                  }, 1200);
+                }
+              }, j * stepMs);
+            });
+          }, stepMs);
+        }
+      }, line1Start + i * stepMs);
+    });
   }
 
   ngAfterViewInit() {
@@ -164,6 +224,15 @@ export class LandingComponent implements OnInit, OnDestroy, AfterViewInit {
     return 1 - Math.pow(1 - t, 3);
   }
 
+  onScroll(e: Event) {
+    const el = e.target as HTMLElement;
+    this.showScrollTop.set(el.scrollTop > 400);
+  }
+
+  scrollToTop() {
+    this.landingScroll.nativeElement.scrollTo({ top: 0, behavior: 'smooth' });
+  }
+
   navigateToChat() {
     this.router.navigate(['/chat']);
   }
@@ -176,5 +245,9 @@ export class LandingComponent implements OnInit, OnDestroy, AfterViewInit {
       return prefix + val.toLocaleString('en-US');
     }
     return prefix + val + suffix;
+  }
+
+  get currentYear(): number {
+    return new Date().getFullYear();
   }
 }

@@ -3,6 +3,7 @@ import { authGuard, adminGuard, guestGuard } from './guards/auth.guard';
 
 export const routes: Routes = [
   { path: '', loadComponent: () => import('./landing/landing').then(m => m.LandingComponent) },
+  { path: 'landing', loadComponent: () => import('./landing/landing').then(m => m.LandingComponent) },
   { path: 'login', loadComponent: () => import('./auth/login/login').then(m => m.LoginComponent), canActivate: [guestGuard] },
   { path: 'register', loadComponent: () => import('./auth/register/register').then(m => m.RegisterComponent), canActivate: [guestGuard] },
   { path: 'chat', loadComponent: () => import('./chat/chat').then(m => m.ChatComponent), canActivate: [authGuard] },
