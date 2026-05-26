@@ -276,7 +276,7 @@ export class ChatComponent implements OnInit, OnDestroy, AfterViewInit {
     if (!content || this.isAiTyping()) return;
 
     this.messages.update(msgs => [...msgs, {
-      id: crypto.randomUUID(),
+      id: this.generateId(),
       role: 'user',
       content,
       timestamp: new Date(),
@@ -288,7 +288,7 @@ export class ChatComponent implements OnInit, OnDestroy, AfterViewInit {
     this.scrollToBottom();
 
     this.isAiTyping.set(true);
-    const aiId = crypto.randomUUID();
+    const aiId = this.generateId();
     this.messages.update(msgs => [...msgs, {
       id: aiId,
       role: 'ai',
@@ -298,24 +298,35 @@ export class ChatComponent implements OnInit, OnDestroy, AfterViewInit {
     }]);
     this.scrollToBottom();
 
-    // If we have a session, ask within it; otherwise create one first
+    // If we have a session, ask within it; otherwise use the one-off endpoint
     if (this.currentSessionId()) {
       this.askInSession(this.currentSessionId()!, content, aiId);
     } else {
-      this.chatService.createSession(content.substring(0, 50)).subscribe({
+      this.chatService.askOneOff(content).subscribe({
         next: (response: any) => {
-          const session = response?.data ?? response;
-          this.currentSessionId.set(session.id);
-          this.askInSession(session.id, content, aiId);
-          this.loadSessions();
+          const res = response?.data ?? response;
+          const answer = res?.answer ?? res?.content ?? '';
+          this.streamResponse(answer, aiId);
         },
         error: () => {
           this.handleAiError(aiId);
         },
       });
     }
+
+    
   }
 
+  private generateId(): string {
+  if (typeof crypto !== 'undefined' && this.generateId()) {
+    return this.generateId();
+  }
+  return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, function(c) {
+    const r = Math.random() * 16 | 0;
+    const v = c === 'x' ? r : (r & 0x3 | 0x8);
+    return v.toString(16);
+  });
+}
   private askInSession(sessionId: number, question: string, aiMsgId: string) {
     this.chatService.askInSession(sessionId, question).subscribe({
       next: (response: any) => {
