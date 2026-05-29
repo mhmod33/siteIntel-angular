@@ -1181,29 +1181,708 @@
 }
 
 @media (max-width: 480px) {
+  :host {
+    font-size: 14px;
+  }
+
+  .warroom {
+    height: 100vh;
+    height: 100dvh;
+  }
+
+  /* Top Bar */
+  .topbar {
+    padding: 10px 14px;
+    gap: 8px;
+  }
+
+  .topbar-brand {
+    gap: 8px;
+    flex: 1;
+  }
+
+  .topbar-logo {
+    width: 26px;
+    height: 26px;
+    font-size: 9px;
+  }
+
+  .topbar-name {
+    display: none;
+  }
+
+  .history-toggle {
+    padding: 6px 12px;
+    font-size: 11px;
+    gap: 6px;
+  }
+
+  .history-label {
+    display: none;
+  }
+
+  .topbar-new,
+  .topbar-profile,
+  .topbar-logout {
+    width: 32px;
+    height: 32px;
+  }
+
+  .topbar-new svg,
+  .topbar-profile svg,
+  .topbar-logout svg {
+    width: 15px;
+    height: 15px;
+  }
+
+  /* Intel Board */
+  .intel-board {
+    width: 95%;
+    max-height: 85vh;
+  }
+
+  .intel-top {
+    padding: 0 2px 16px;
+  }
+
+  .intel-title {
+    font-size: 15px;
+  }
+
+  .intel-badge {
+    font-size: 8px;
+    padding: 2px 8px;
+  }
+
+  .intel-close {
+    font-size: 9px;
+    padding: 5px 12px;
+  }
+
+  .intel-grid {
+    grid-template-columns: 1fr;
+    gap: 10px;
+    max-height: 65vh;
+  }
+
+  .intel-card {
+    padding: 14px 16px;
+    gap: 8px;
+  }
+
+  .ic-title {
+    font-size: 13px;
+  }
+
+  .ic-preview {
+    font-size: 11px;
+  }
+
+  .ic-cat {
+    font-size: 8px;
+    padding: 2px 6px;
+  }
+
+  .ic-time {
+    font-size: 9px;
+  }
+
+  .intel-new {
+    padding: 10px 20px;
+    font-size: 12px;
+    gap: 8px;
+  }
+
+  /* Empty State */
+  .empty-state {
+    padding: 24px 16px;
+    justify-content: flex-start;
+    padding-top: 40px;
+  }
+
   .hero {
-    font-size: 1.2rem !important;
+    font-size: clamp(1.1rem, 3.5vw, 1.6rem) !important;
+    margin-bottom: 32px;
+    line-height: 1.2;
+  }
+
+  .hero-word {
+    margin: 0 3px;
+  }
+
+  /* Carousel */
+  .carousel-wrapper {
+    gap: 16px;
+    max-width: 100%;
+  }
+
+  .carousel {
+    height: 140px;
   }
 
   .carousel-card {
-    width: 200px;
-    padding: 16px;
-  }
-
-  .cc-text {
+    width: 180px;
+    padding: 14px 16px;
     font-size: 12px;
   }
 
-  .user-msg {
-    max-width: 92%;
+  .cc-icon {
+    font-size: 10px;
+    padding: 3px 8px;
   }
 
-  .im-body, .ai-body {
+  .cc-text {
+    font-size: 11px;
+    line-height: 1.5;
+  }
+
+  .cc-tag {
+    font-size: 9px;
+    padding: 2px 8px;
+  }
+
+  .carousel-dots {
+    gap: 4px;
+  }
+
+  .dot {
+    width: 5px;
+    height: 5px;
+  }
+
+  .dot.active {
+    width: 16px;
+  }
+
+  /* Messages Area */
+  .messages-area {
+    padding: 16px 14px;
+    padding-bottom: 100px;
+    max-width: 100%;
+  }
+
+  .messages-inner {
+    gap: 14px;
+  }
+
+  .intel-msg {
+    padding: 12px 14px;
+    border-radius: 12px;
+  }
+
+  .im-header {
+    margin-bottom: 8px;
+    gap: 8px;
+  }
+
+  .im-badge {
+    font-size: 7px;
+    padding: 2px 8px;
+  }
+
+  .im-time {
+    font-size: 9px;
+  }
+
+  .im-body,
+  .ai-body {
+    font-size: 12px;
+    line-height: 1.6;
+  }
+
+  .ai-body h2 {
     font-size: 13px;
+    margin-bottom: 8px;
+  }
+
+  .ai-body h3 {
+    font-size: 12px;
+    margin: 12px 0 6px;
+  }
+
+  .ai-body table {
+    font-size: 11px;
+    margin: 10px 0;
+  }
+
+  .ai-body th,
+  .ai-body td {
+    padding: 8px 10px;
+  }
+
+  .user-msg {
+    max-width: 85%;
+  }
+
+  .ai-msg {
+    max-width: 100%;
+  }
+
+  /* Iris Input */
+  .iris-container {
+    bottom: 16px;
+    padding: 0 12px;
+  }
+
+  .iris-container.conversation-mode {
+    bottom: 12px;
+    padding: 0 12px;
+    max-width: calc(100% - 24px);
+  }
+
+  .iris-core {
+    width: 60px;
+    height: 60px;
+  }
+
+  .iris-ring {
+    width: 80px;
+    height: 80px;
+  }
+
+  .iris-hint {
+    font-size: 11px;
+  }
+
+  .iris-open {
+    max-width: calc(100% - 24px);
+  }
+
+  .iris-open.compact {
+    max-width: calc(100% - 24px);
   }
 
   .iris-field {
     border-radius: 20px;
+    padding: 7px 11px;
+    gap: 3px;
+  }
+
+  .iris-field textarea {
+    font-size: 13px;
+    padding: 5px 10px;
+    min-height: 28px;
+    max-height: 100px;
+  }
+
+  .iris-send {
+    width: 34px;
+    height: 34px;
+  }
+
+  .iris-send svg {
+    width: 15px;
+    height: 15px;
+  }
+
+  /* Scanning Animation */
+  .ai-scanning {
+    gap: 12px;
+    padding: 8px 0 2px;
+  }
+
+  .scan-bars {
+    gap: 2px;
+    height: 16px;
+  }
+
+  .scan-bar {
+    width: 2px;
+  }
+
+  .scan-bar:nth-child(1) { height: 6px; }
+  .scan-bar:nth-child(2) { height: 14px; }
+  .scan-bar:nth-child(3) { height: 10px; }
+
+  .scanning-text {
+    font-size: 11px;
+  }
+
+  /* Grid Background */
+  .grid-lines {
+    background-size: 52px 52px;
+  }
+
+  .hot-zone {
+    width: 18px;
+    height: 18px;
+  }
+
+  .float-label {
+    font-size: 9px;
+  }
+
+  /* Optimize for notch/safe area */
+  @supports (padding: max(0px)) {
+    .topbar {
+      padding-left: max(14px, env(safe-area-inset-left));
+      padding-right: max(14px, env(safe-area-inset-right));
+    }
+
+    .messages-area {
+      padding-left: max(14px, env(safe-area-inset-left));
+      padding-right: max(14px, env(safe-area-inset-right));
+    }
+
+    .iris-container {
+      padding-left: max(12px, env(safe-area-inset-left));
+      padding-right: max(12px, env(safe-area-inset-right));
+    }
+  }
+}
+
+/* ═══════════════════════════════════════════════════════
+   ULTRA-MOBILE: Below 360px
+   ═══════════════════════════════════════════════════════ */
+
+@media (max-width: 360px) {
+  :host {
+    --gold: #C9A84C;
+    font-size: 13px;
+  }
+
+  .warroom {
+    height: 100vh;
+    height: 100dvh;
+  }
+
+  /* Top Bar */
+  .topbar {
+    padding: 8px 12px;
+    gap: 8px;
+  }
+
+  .topbar-brand {
+    gap: 6px;
+    flex: 1;
+  }
+
+  .topbar-logo {
+    width: 24px;
+    height: 24px;
+    font-size: 9px;
+  }
+
+  .topbar-name {
+    display: none;
+  }
+
+  .history-toggle {
+    padding: 6px 12px;
+    font-size: 11px;
+    gap: 6px;
+  }
+
+  .history-label {
+    display: none;
+  }
+
+  .topbar-new,
+  .topbar-profile,
+  .topbar-logout {
+    width: 30px;
+    height: 30px;
+  }
+
+  .topbar-new svg,
+  .topbar-profile svg,
+  .topbar-logout svg {
+    width: 14px;
+    height: 14px;
+  }
+
+  /* Intel Board */
+  .intel-board {
+    width: 95%;
+    max-height: 85vh;
+  }
+
+  .intel-top {
+    padding: 0 2px 16px;
+  }
+
+  .intel-title {
+    font-size: 14px;
+  }
+
+  .intel-badge {
+    font-size: 8px;
+    padding: 2px 8px;
+  }
+
+  .intel-close {
+    font-size: 9px;
+    padding: 5px 12px;
+  }
+
+  .intel-grid {
+    grid-template-columns: 1fr;
+    gap: 10px;
+    max-height: 65vh;
+  }
+
+  .intel-card {
+    padding: 14px 16px;
+    gap: 8px;
+  }
+
+  .ic-title {
+    font-size: 13px;
+  }
+
+  .ic-preview {
+    font-size: 11px;
+  }
+
+  .ic-cat {
+    font-size: 8px;
+    padding: 2px 6px;
+  }
+
+  .ic-time {
+    font-size: 9px;
+  }
+
+  .intel-new {
+    padding: 10px 20px;
+    font-size: 12px;
+    gap: 8px;
+  }
+
+  /* Empty State */
+  .empty-state {
+    padding: 24px 16px;
+    justify-content: flex-start;
+    padding-top: 40px;
+  }
+
+  .hero {
+    font-size: clamp(1.2rem, 3.5vw, 1.8rem) !important;
+    margin-bottom: 32px;
+    line-height: 1.2;
+  }
+
+  .hero-word {
+    margin: 0 3px;
+  }
+
+  /* Carousel */
+  .carousel-wrapper {
+    gap: 16px;
+    max-width: 100%;
+  }
+
+  .carousel {
+    height: 140px;
+  }
+
+  .carousel-card {
+    width: 160px;
+    padding: 14px 16px;
+    font-size: 12px;
+  }
+
+  .cc-icon {
+    font-size: 10px;
+    padding: 3px 8px;
+  }
+
+  .cc-text {
+    font-size: 11px;
+    line-height: 1.5;
+  }
+
+  .cc-tag {
+    font-size: 9px;
+    padding: 2px 8px;
+  }
+
+  .carousel-dots {
+    gap: 4px;
+  }
+
+  .dot {
+    width: 5px;
+    height: 5px;
+  }
+
+  .dot.active {
+    width: 16px;
+  }
+
+  /* Messages Area */
+  .messages-area {
+    padding: 16px 12px;
+    padding-bottom: 100px;
+    max-width: 100%;
+  }
+
+  .messages-inner {
+    gap: 14px;
+  }
+
+  .intel-msg {
+    padding: 12px 14px;
+    border-radius: 12px;
+  }
+
+  .im-header {
+    margin-bottom: 8px;
+    gap: 8px;
+  }
+
+  .im-badge {
+    font-size: 7px;
+    padding: 2px 8px;
+  }
+
+  .im-time {
+    font-size: 9px;
+  }
+
+  .im-body,
+  .ai-body {
+    font-size: 12px;
+    line-height: 1.6;
+  }
+
+  .ai-body h2 {
+    font-size: 13px;
+    margin-bottom: 8px;
+  }
+
+  .ai-body h3 {
+    font-size: 12px;
+    margin: 12px 0 6px;
+  }
+
+  .ai-body table {
+    font-size: 11px;
+    margin: 10px 0;
+  }
+
+  .ai-body th,
+  .ai-body td {
+    padding: 8px 10px;
+  }
+
+  .user-msg {
+    max-width: 88%;
+  }
+
+  .ai-msg {
+    max-width: 100%;
+  }
+
+  /* Iris Input */
+  .iris-container {
+    bottom: 16px;
+    padding: 0 12px;
+  }
+
+  .iris-container.conversation-mode {
+    bottom: 12px;
+    padding: 0 12px;
+    max-width: calc(100% - 24px);
+  }
+
+  .iris-core {
+    width: 56px;
+    height: 56px;
+  }
+
+  .iris-ring {
+    width: 72px;
+    height: 72px;
+  }
+
+  .iris-hint {
+    font-size: 11px;
+  }
+
+  .iris-open {
+    max-width: calc(100% - 24px);
+  }
+
+  .iris-open.compact {
+    max-width: calc(100% - 24px);
+  }
+
+  .iris-field {
+    border-radius: 18px;
     padding: 6px 10px;
+    gap: 3px;
+  }
+
+  .iris-field textarea {
+    font-size: 13px;
+    padding: 5px 10px;
+    min-height: 26px;
+    max-height: 100px;
+  }
+
+  .iris-send {
+    width: 32px;
+    height: 32px;
+  }
+
+  .iris-send svg {
+    width: 14px;
+    height: 14px;
+  }
+
+  /* Scanning Animation */
+  .ai-scanning {
+    gap: 12px;
+    padding: 8px 0 2px;
+  }
+
+  .scan-bars {
+    gap: 2px;
+    height: 16px;
+  }
+
+  .scan-bar {
+    width: 2px;
+  }
+
+  .scan-bar:nth-child(1) { height: 6px; }
+  .scan-bar:nth-child(2) { height: 14px; }
+  .scan-bar:nth-child(3) { height: 10px; }
+
+  .scanning-text {
+    font-size: 11px;
+  }
+
+  /* Grid Background */
+  .grid-lines {
+    background-size: 48px 48px;
+  }
+
+  .hot-zone {
+    width: 16px;
+    height: 16px;
+  }
+
+  .float-label {
+    font-size: 9px;
+  }
+
+  /* Optimize for notch/safe area */
+  @supports (padding: max(0px)) {
+    .topbar {
+      padding-left: max(12px, env(safe-area-inset-left));
+      padding-right: max(12px, env(safe-area-inset-right));
+    }
+
+    .messages-area {
+      padding-left: max(12px, env(safe-area-inset-left));
+      padding-right: max(12px, env(safe-area-inset-right));
+    }
+
+    .iris-container {
+      padding-left: max(12px, env(safe-area-inset-left));
+      padding-right: max(12px, env(safe-area-inset-right));
+    }
   }
 }

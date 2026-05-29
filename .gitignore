@@ -21,8 +21,14 @@ yarn-error.log
 dist/
 /dist
 
+# Environment files
 environments/
 /environments
+src/environments/environment.ts
+src/environments/environment.production.ts
+src/environments/*.ts
+!src/environments/environment.example.ts
+
 # Visual Studio Code
 .vscode/*
 !.vscode/settings.json

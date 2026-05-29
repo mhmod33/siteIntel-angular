@@ -400,24 +400,365 @@
 
 /* ═══ RESPONSIVE ═══ */
 @media (max-width: 480px) {
-  .profile-card {
-    padding: 36px 24px;
-    border-radius: 18px;
+  :host {
+    font-size: 14px;
   }
 
-  .profile-name {
-    font-size: 20px;
+  .profile-page {
+    height: 100vh;
+    height: 100dvh;
   }
 
-  .profile-info {
-    gap: 12px;
+  /* Grid Background */
+  .grid-lines {
+    background-size: 52px 52px;
   }
 
+  .hot-zone {
+    width: 18px;
+    height: 18px;
+  }
+
+  /* Top Bar */
   .topbar {
-    padding: 10px 16px;
+    padding: 10px 14px;
+    gap: 8px;
+  }
+
+  .topbar-brand {
+    gap: 8px;
+    flex: 1;
+  }
+
+  .topbar-logo {
+    width: 26px;
+    height: 26px;
+    font-size: 9px;
   }
 
   .topbar-name {
     display: none;
+  }
+
+  .topbar-actions {
+    gap: 10px;
+  }
+
+  .topbar-link {
+    font-size: 12px;
+  }
+
+  .topbar-btn {
+    padding: 6px 13px;
+    font-size: 11px;
+  }
+
+  /* Main */
+  .profile-main {
+    padding: 18px;
+  }
+
+  /* Profile Card */
+  .profile-card {
+    padding: 32px 24px;
+    gap: 18px;
+    border-radius: 16px;
+    max-width: 100%;
+  }
+
+  /* Avatar */
+  .profile-avatar {
+    width: 72px;
+    height: 72px;
+  }
+
+  .avatar-letter {
+    width: 64px;
+    height: 64px;
+    font-size: 26px;
+    border-width: 2px;
+  }
+
+  .avatar-ring {
+    inset: -3px;
+  }
+
+  /* Name & Email */
+  .profile-name {
+    font-size: 20px;
+    margin: 0;
+  }
+
+  .profile-email {
+    font-size: 12px;
+    margin: -6px 0 0;
+  }
+
+  /* Info Grid */
+  .profile-info {
+    gap: 12px;
+    padding: 16px 0;
+  }
+
+  .info-item {
+    gap: 7px;
+    min-width: 90px;
+  }
+
+  .info-label {
+    font-size: 10px;
+    letter-spacing: 0.25px;
+  }
+
+  .info-value {
+    font-size: 12px;
+  }
+
+  .role-badge {
+    padding: 3px 11px;
+    font-size: 11px;
+  }
+
+  .status-value {
+    font-size: 11px;
+    gap: 5px;
+  }
+
+  .status-dot {
+    width: 6px;
+    height: 6px;
+  }
+
+  .id-value {
+    font-size: 11px;
+  }
+
+  /* Actions */
+  .profile-actions {
+    gap: 11px;
+    margin-top: 8px;
+  }
+
+  .action-btn {
+    padding: 13px;
+    border-radius: 11px;
+    font-size: 13px;
+    gap: 9px;
+  }
+
+  /* Loading */
+  .profile-loading {
+    gap: 13px;
+    font-size: 12px;
+  }
+
+  .scan-bars {
+    gap: 2px;
+    height: 18px;
+  }
+
+  .scan-bar {
+    width: 2px;
+  }
+
+  .scan-bar:nth-child(1) { height: 7px; }
+  .scan-bar:nth-child(2) { height: 15px; }
+  .scan-bar:nth-child(3) { height: 11px; }
+
+  /* Optimize for notch/safe area */
+  @supports (padding: max(0px)) {
+    .topbar {
+      padding-left: max(14px, env(safe-area-inset-left));
+      padding-right: max(14px, env(safe-area-inset-right));
+    }
+
+    .profile-main {
+      padding-left: max(18px, env(safe-area-inset-left));
+      padding-right: max(18px, env(safe-area-inset-right));
+    }
+  }
+}
+
+/* ═══════════════════════════════════════════════════════
+   ULTRA-MOBILE: Below 360px
+   ═══════════════════════════════════════════════════════ */
+
+@media (max-width: 360px) {
+  :host {
+    font-size: 13px;
+  }
+
+  .profile-page {
+    height: 100vh;
+    height: 100dvh;
+  }
+
+  /* Grid Background */
+  .grid-lines {
+    background-size: 48px 48px;
+  }
+
+  .hot-zone {
+    width: 16px;
+    height: 16px;
+  }
+
+  /* Top Bar */
+  .topbar {
+    padding: 8px 12px;
+    gap: 8px;
+  }
+
+  .topbar-brand {
+    gap: 6px;
+    flex: 1;
+  }
+
+  .topbar-logo {
+    width: 24px;
+    height: 24px;
+    font-size: 9px;
+  }
+
+  .topbar-name {
+    display: none;
+  }
+
+  .topbar-actions {
+    gap: 8px;
+  }
+
+  .topbar-link {
+    font-size: 12px;
+  }
+
+  .topbar-btn {
+    padding: 6px 12px;
+    font-size: 11px;
+  }
+
+  /* Main */
+  .profile-main {
+    padding: 16px;
+  }
+
+  /* Profile Card */
+  .profile-card {
+    padding: 24px 18px;
+    gap: 16px;
+    border-radius: 14px;
+    max-width: 100%;
+  }
+
+  /* Avatar */
+  .profile-avatar {
+    width: 64px;
+    height: 64px;
+  }
+
+  .avatar-letter {
+    width: 56px;
+    height: 56px;
+    font-size: 24px;
+    border-width: 2px;
+  }
+
+  .avatar-ring {
+    inset: -3px;
+  }
+
+  /* Name & Email */
+  .profile-name {
+    font-size: 18px;
+    margin: 0;
+  }
+
+  .profile-email {
+    font-size: 12px;
+    margin: -6px 0 0;
+  }
+
+  /* Info Grid */
+  .profile-info {
+    gap: 10px;
+    padding: 14px 0;
+  }
+
+  .info-item {
+    gap: 6px;
+    min-width: 80px;
+  }
+
+  .info-label {
+    font-size: 10px;
+    letter-spacing: 0.2px;
+  }
+
+  .info-value {
+    font-size: 12px;
+  }
+
+  .role-badge {
+    padding: 3px 10px;
+    font-size: 11px;
+  }
+
+  .status-value {
+    font-size: 11px;
+    gap: 4px;
+  }
+
+  .status-dot {
+    width: 6px;
+    height: 6px;
+  }
+
+  .id-value {
+    font-size: 11px;
+  }
+
+  /* Actions */
+  .profile-actions {
+    gap: 10px;
+    margin-top: 6px;
+  }
+
+  .action-btn {
+    padding: 12px;
+    border-radius: 10px;
+    font-size: 13px;
+    gap: 8px;
+  }
+
+  /* Loading */
+  .profile-loading {
+    gap: 12px;
+    font-size: 12px;
+  }
+
+  .scan-bars {
+    gap: 2px;
+    height: 16px;
+  }
+
+  .scan-bar {
+    width: 2px;
+  }
+
+  .scan-bar:nth-child(1) { height: 6px; }
+  .scan-bar:nth-child(2) { height: 14px; }
+  .scan-bar:nth-child(3) { height: 10px; }
+
+  /* Optimize for notch/safe area */
+  @supports (padding: max(0px)) {
+    .topbar {
+      padding-left: max(12px, env(safe-area-inset-left));
+      padding-right: max(12px, env(safe-area-inset-right));
+    }
+
+    .profile-main {
+      padding-left: max(16px, env(safe-area-inset-left));
+      padding-right: max(16px, env(safe-area-inset-right));
+    }
   }
 }
