@@ -5,7 +5,7 @@ import {
 import { FormsModule } from '@angular/forms';
 import { Router, RouterLink } from '@angular/router';
 import { DomSanitizer, SafeHtml } from '@angular/platform-browser';
-import { ChatService, ChatSession } from '../services/chat.service';
+import { ChatService, ChatSessionSummary, ChatMessage as ApiChatMessage } from '../services/chat.service';
 import { AuthService } from '../services/auth.service';
 
 interface ChatMessage {
@@ -45,7 +45,7 @@ export class ChatComponent implements OnInit, OnDestroy, AfterViewInit {
   private router = inject(Router);
 
   currentSessionId = signal<number | null>(null);
-  sessions = signal<ChatSession[]>([]);
+  sessions = signal<ChatSessionSummary[]>([]);
 
   // State
   messages = signal<ChatMessage[]>([]);
@@ -120,11 +120,10 @@ export class ChatComponent implements OnInit, OnDestroy, AfterViewInit {
 
   private loadSessions() {
     this.chatService.getSessions().subscribe({
-      next: (response: any) => {
-        const sessions = Array.isArray(response) ? response : (response.data ?? []);
+      next: (sessions: ChatSessionSummary[]) => {
         this.sessions.set(sessions);
         const categories: Array<'roi' | 'compare' | 'trends'> = ['roi', 'compare', 'trends'];
-        this.nodes.set(sessions.map((s: any, i: number) => ({
+        this.nodes.set(sessions.map((s: ChatSessionSummary, i: number) => ({
           id: String(s.id),
           title: s.title || `محادثة ${s.id}`,
           preview: '',
@@ -210,17 +209,29 @@ export class ChatComponent implements OnInit, OnDestroy, AfterViewInit {
     this.currentSessionId.set(Number(node.id));
     // Load session messages
     this.chatService.getSession(Number(node.id)).subscribe({
-      next: (response: any) => {
-        const detail = response?.data ?? response;
-        const messages = detail?.messages ?? [];
-        const msgs: ChatMessage[] = messages.map((m: any) => ({
-          id: String(m.id),
-          role: m.role === 'assistant' ? 'ai' as const : 'user' as const,
-          content: m.content,
-          timestamp: new Date(m.created_at),
-          isStreaming: false,
-        }));
-        this.messages.set(msgs);
+      next: (session) => {
+        const messages = session?.messages ?? [];
+        
+        // If session has no messages, show a message to the user
+        if (messages.length === 0) {
+          this.messages.set([{
+            id: this.generateId(),
+            role: 'ai',
+            content: 'هذه المحادثة فارغة. ابدأ بسؤال جديد لمتابعة المحادثة.',
+            timestamp: new Date(),
+            isStreaming: false,
+          }]);
+        } else {
+          const msgs: ChatMessage[] = messages.map((m: ApiChatMessage) => ({
+            id: String(m.id),
+            role: m.role === 'assistant' ? 'ai' as const : 'user' as const,
+            content: m.content,
+            timestamp: new Date(m.created_at),
+            isStreaming: false,
+          }));
+          this.messages.set(msgs);
+        }
+        
         this.scrollToBottom();
       },
       error: () => {},
@@ -298,25 +309,32 @@ export class ChatComponent implements OnInit, OnDestroy, AfterViewInit {
     }]);
     this.scrollToBottom();
 
-    // If we have a session, ask within it; otherwise use the one-off endpoint
-    if (this.currentSessionId()) {
-      this.askInSession(this.currentSessionId()!, content, aiId);
-    } else {
-      this.chatService.askOneOff(content).subscribe({
-        next: (response: any) => {
-          const res = response?.data ?? response;
-          const answer = res?.answer ?? res?.content ?? '';
-          this.streamResponse(answer, aiId);
-        },
-        error: () => {
+    // Call the unified /api/ask endpoint with session_id if we have one
+    this.chatService.ask(content, this.currentSessionId() ?? undefined).subscribe({
+      next: (response) => {
+        // Save the session ID if this is a new session
+        if (!this.currentSessionId()) {
+          this.currentSessionId.set(response.session.id);
+          this.activeConvId.set(String(response.session.id));
+          // Reload sessions to update the constellation
+          this.loadSessions();
+        }
+        
+        const answer = response.answer ?? '';
+        this.streamResponse(answer, aiId);
+      },
+      error: (error) => {
+        // Handle 404 for invalid session_id
+        if (error.status === 404) {
           this.handleAiError(aiId);
-        },
-      });
-    }
-
-    
+          this.currentSessionId.set(null);
+          this.activeConvId.set(null);
+        } else {
+          this.handleAiError(aiId);
+        }
+      },
+    });
   }
-
 private generateId(): string {
   return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, function(c) {
     const r = Math.random() * 16 | 0;
@@ -324,18 +342,6 @@ private generateId(): string {
     return v.toString(16);
   });
 }
-  private askInSession(sessionId: number, question: string, aiMsgId: string) {
-    this.chatService.askInSession(sessionId, question).subscribe({
-      next: (response: any) => {
-        const res = response?.data ?? response;
-        const answer = res?.answer ?? res?.content ?? '';
-        this.streamResponse(answer, aiMsgId);
-      },
-      error: () => {
-        this.handleAiError(aiMsgId);
-      },
-    });
-  }
 
   private streamResponse(fullText: string, aiMsgId: string) {
     let charIdx = 0;
